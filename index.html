@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🕵️ Detectives del Dinero</title>
+<style>
+:root{
+  --bg:#08111f; --panel:#101d31; --panel2:#15263f; --text:#eef6ff; --muted:#9fb1c7;
+  --cyan:#38d9ff; --yellow:#ffd166; --green:#45e39a; --red:#ff6b7a; --purple:#a78bfa;
+  --shadow:0 18px 50px rgba(0,0,0,.32);
+}
+*{box-sizing:border-box} html{scroll-behavior:smooth}
+body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--text);
+background:radial-gradient(circle at 15% 10%,#17375c 0,transparent 32%),radial-gradient(circle at 90% 0,#3b225d 0,transparent 28%),var(--bg);min-height:100vh}
+button,input,textarea{font:inherit}
+button{cursor:pointer}
+.container{width:min(1180px,92%);margin:auto}
+header{padding:26px 0 18px;position:sticky;top:0;z-index:20;background:rgba(8,17,31,.82);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.08)}
+.nav{display:flex;justify-content:space-between;align-items:center;gap:16px}
+.brand{display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:.4px}.brand-icon{font-size:34px}
+.badge{padding:8px 12px;border:1px solid rgba(56,217,255,.3);border-radius:999px;color:var(--cyan);font-size:13px;font-weight:800}
+.hero{padding:55px 0 35px;display:grid;grid-template-columns:1.25fr .75fr;gap:30px;align-items:center}
+.kicker{color:var(--cyan);font-weight:900;text-transform:uppercase;letter-spacing:2px;font-size:13px}
+h1{font-size:clamp(42px,7vw,76px);line-height:.95;margin:12px 0 20px;letter-spacing:-3px}
+.hero p{font-size:18px;color:var(--muted);max-width:720px;line-height:1.6}
+.hero-card{background:linear-gradient(145deg,rgba(21,38,63,.95),rgba(13,25,43,.95));border:1px solid rgba(255,255,255,.09);border-radius:28px;padding:28px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero-card:before{content:"";position:absolute;width:180px;height:180px;border-radius:50%;background:rgba(56,217,255,.12);right:-50px;top:-60px}
+.detective{font-size:120px;text-align:center;filter:drop-shadow(0 12px 20px rgba(0,0,0,.3))}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:24px}
+.stat{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);padding:16px;border-radius:18px;text-align:center}
+.stat strong{display:block;font-size:25px}.stat span{font-size:12px;color:var(--muted)}
+.btn{border:0;border-radius:14px;padding:13px 18px;font-weight:900;transition:.2s;display:inline-flex;align-items:center;gap:8px}
+.btn:hover{transform:translateY(-2px)}.btn-primary{background:var(--cyan);color:#04111c}.btn-ghost{background:rgba(255,255,255,.07);color:var(--text);border:1px solid rgba(255,255,255,.1)}
+.section{padding:30px 0 70px}.section-title{font-size:32px;margin:0 0 8px}.section-sub{color:var(--muted);margin:0 0 24px}
+.mission{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.mission .card{background:var(--panel);border:1px solid rgba(255,255,255,.08);padding:20px;border-radius:20px}
+.card .emoji{font-size:28px}.card h3{margin:10px 0 7px}.card p{color:var(--muted);line-height:1.45;margin:0}
+.game-shell{background:linear-gradient(145deg,rgba(16,29,49,.97),rgba(10,21,37,.97));border:1px solid rgba(255,255,255,.09);border-radius:28px;padding:24px;box-shadow:var(--shadow)}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:18px}.progress{height:10px;background:#07101d;border-radius:99px;overflow:hidden;flex:1}.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--cyan),var(--purple));width:20%;transition:.4s}
+.case-grid{display:grid;grid-template-columns:1fr .72fr;gap:22px}
+.case-card{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08);border-radius:22px;padding:24px}
+.case-number{color:var(--yellow);font-weight:900;font-size:13px;letter-spacing:1px}.case-card h2{font-size:30px;margin:8px 0 15px}
+.clue{background:#0b1728;border-left:4px solid var(--cyan);padding:18px;border-radius:12px;line-height:1.55;color:#d9e7f5}
+.options{display:grid;gap:10px;margin-top:18px}.option{width:100%;text-align:left;background:rgba(255,255,255,.05);color:var(--text);border:1px solid rgba(255,255,255,.1);padding:15px;border-radius:14px;font-weight:800}.option:hover{border-color:var(--cyan);background:rgba(56,217,255,.08)}
+.option.selected{outline:2px solid var(--cyan);background:rgba(56,217,255,.12)}
+.option.correct{border-color:var(--green);background:rgba(69,227,154,.12)}.option.wrong{border-color:var(--red);background:rgba(255,107,122,.1)}
+.assertions{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:16px}.assertion{padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:var(--text);text-align:left}.assertion.selected{background:rgba(167,139,250,.15);border-color:var(--purple)}
+.assertion b{display:block;color:var(--purple)}.assertion small{color:var(--muted)}
+.explain{margin-top:15px;padding:14px;border-radius:14px;background:rgba(69,227,154,.08);border:1px solid rgba(69,227,154,.25);color:#dfffee;display:none;line-height:1.5}
+.actions{display:flex;justify-content:space-between;gap:10px;margin-top:20px}
+.score{font-size:26px;font-weight:900;color:var(--yellow)}
+.surprise,.reflection{display:none}
+.final{text-align:center;padding:35px}.trophy{font-size:76px}
+input,textarea{width:100%;background:#091625;color:var(--text);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:13px;outline:none}
+textarea{min-height:100px;resize:vertical}.field{margin:12px 0}.field label{display:block;font-weight:800;margin-bottom:7px}
+footer{padding:30px 0 50px;color:var(--muted);text-align:center;font-size:13px}
+@media(max-width:900px){.hero,.case-grid{grid-template-columns:1fr}.mission{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.mission,.stats{grid-template-columns:1fr}.topbar{flex-wrap:wrap}.progress{order:3;flex-basis:100%}h1{letter-spacing:-2px}.hero{padding-top:35px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="container nav">
+    <div class="brand"><span class="brand-icon">🕵️</span> Detectives del Dinero</div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end">
+      <span id="userBadge" class="badge">🔐 No has iniciado sesión</span>
+      <button id="loginBtn" class="btn btn-primary" style="padding:9px 13px">🔵 Entrar con Google</button>
+      <button id="logoutBtn" class="btn btn-ghost" style="padding:9px 13px;display:none">Salir</button>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+<section class="hero">
+  <div>
+    <div class="kicker">Misión de auditoría</div>
+    <h1>Encuentra la verdad detrás del dinero.</h1>
+    <p>Conviértete en detective financiero. Analiza pistas, detecta diferencias, identifica las aseveraciones de auditoría y defiende tus decisiones con evidencia.</p>
+    <button class="btn btn-primary" onclick="startGame()">🚀 Iniciar misión</button>
+    <p id="authMessage" style="margin:10px 0 0;color:var(--muted);font-size:14px">Inicia sesión con Google para comenzar y registrar tu participación.</p>
+    <div class="stats">
+      <div class="stat"><strong>5</strong><span>Pistas principales</span></div>
+      <div class="stat"><strong>10</strong><span>Puntos por pista</span></div>
+      <div class="stat"><strong>6</strong><span>Aseveraciones</span></div>
+    </div>
+  </div>
+  <div class="hero-card"><div class="detective">🕵️‍♂️💰</div><p style="text-align:center;margin:0;color:var(--muted)">“Un auditor no está para creer o desconfiar. Está para obtener evidencia.”</p></div>
+</section>
+
+<section class="section" id="mision">
+  <h2 class="section-title">🎯 Tu misión</h2>
+  <p class="section-sub">Descubre qué ocurre con el dinero de la empresa.</p>
+  <div class="mission">
+    <div class="card"><div class="emoji">🔎</div><h3>Detecta el problema</h3><p>Encuentra diferencias o información que necesita revisión.</p></div>
+    <div class="card"><div class="emoji">💰</div><h3>Calcula</h3><p>Determina cuánto dinero debería existir o registrarse.</p></div>
+    <div class="card"><div class="emoji">📋</div><h3>Piensa como auditor</h3><p>Decide qué evidencia o procedimiento sería necesario.</p></div>
+    <div class="card"><div class="emoji">🏷️</div><h3>Identifica</h3><p>Relaciona cada caso con las aseveraciones correspondientes.</p></div>
+  </div>
+</section>
+
+<section class="section" id="cuenta">
+  <div class="game-shell" style="display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap">
+    <div>
+      <div class="kicker">Registro de participante</div>
+      <h2 class="section-title" style="margin-top:6px">👤 Tu cuenta</h2>
+      <p id="accountText" class="section-sub" style="margin-bottom:0">No has iniciado sesión. Usa Google para identificar tu participación.</p>
+    </div>
+    <button id="loginBtn2" class="btn btn-primary">🔵 Iniciar sesión con Google</button>
+  </div>
+</section>
+
+<section class="section" id="juego">
+  <div class="game-shell">
+    <div class="topbar">
+      <strong id="caseLabel">Pista 1 de 5</strong>
+      <div class="progress"><i id="bar"></i></div>
+      <div class="score">⭐ <span id="score">0</span></div>
+    </div>
+    <div id="gameArea"></div>
+  </div>
+</section>
+</main>
+
+<footer>Proyecto educativo basado en el material “Detectives del dinero”. Diseñado para una dinámica de auditoría en clase.</footer>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA46X55YhvbjiJtI7SE6S4QXhDgTRT0vsA",
+  authDomain: "detectives-del-dinero-1b69e.firebaseapp.com",
+  projectId: "detectives-del-dinero-1b69e",
+  storageBucket: "detectives-del-dinero-1b69e.firebasestorage.app",
+  messagingSenderId: "106657088160",
+  appId: "1:106657088160:web:af90f9ac8891d432cfffc5"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+
+let currentUser = null;
+
+async function loginWithGoogle(){
+  try{
+    const result = await signInWithPopup(auth, provider);
+    currentUser = result.user;
+    updateAuthUI(currentUser);
+  }catch(error){
+    console.error(error);
+    alert("No se pudo iniciar sesión. Si estás probando el archivo directamente desde tu computadora, publícalo en GitHub Pages o ejecútalo desde un servidor local y vuelve a intentarlo.");
+  }
+}
+
+async function logout(){
+  try{
+    await signOut(auth);
+  }catch(error){
+    console.error(error);
+  }
+}
+
+function updateAuthUI(user){
+  const badge = document.getElementById("userBadge");
+  const loginBtn = document.getElementById("loginBtn");
+  const logoutBtn = document.getElementById("logoutBtn");
+  const loginBtn2 = document.getElementById("loginBtn2");
+  const accountText = document.getElementById("accountText");
+  const authMessage = document.getElementById("authMessage");
+
+  if(user){
+    const name = user.displayName || "Participante";
+    const email = user.email || "";
+    badge.textContent = "🟢 " + name;
+    loginBtn.style.display = "none";
+    logoutBtn.style.display = "inline-flex";
+    loginBtn2.style.display = "none";
+    accountText.innerHTML = "<b>" + name + "</b><br><span style='color:var(--muted)'>" + email + "</span>";
+    authMessage.textContent = "Sesión iniciada. Ya puedes comenzar la misión.";
+    authMessage.style.color = "var(--green)";
+  }else{
+    badge.textContent = "🔐 No has iniciado sesión";
+    loginBtn.style.display = "inline-flex";
+    logoutBtn.style.display = "none";
+    loginBtn2.style.display = "inline-flex";
+    accountText.textContent = "No has iniciado sesión. Usa Google para identificar tu participación.";
+    authMessage.textContent = "Inicia sesión con Google para comenzar y registrar tu participación.";
+    authMessage.style.color = "var(--muted)";
+  }
+}
+
+document.getElementById("loginBtn").addEventListener("click", loginWithGoogle);
+document.getElementById("loginBtn2").addEventListener("click", loginWithGoogle);
+document.getElementById("logoutBtn").addEventListener("click", logout);
+
+onAuthStateChanged(auth, user => {
+  currentUser = user;
+  updateAuthUI(user);
+});
+
+const cases=[
+{title:"El banco",emoji:"🟦",clue:"En los registros de la empresa aparecen $80,000, pero el estado de cuenta del banco muestra $76,000.",question:"¿Qué harían ustedes?",options:["Aceptar los $80,000 porque están en la contabilidad.","Investigar la diferencia.","Ignorarla porque no es mucha cantidad."],correct:1,explain:"La diferencia debe investigarse y respaldarse con evidencia. La actividad relaciona este caso con una conciliación bancaria.",assert:["EX","V"],extra:"Investigación adicional: ¿qué es una conciliación bancaria y cómo se relaciona con este caso?"},
+{title:"La caja",emoji:"🟩",clue:"El registro dice $5,000, pero cuando cuentan físicamente el dinero encuentran $3,800.",question:"¿Cuánto dinero falta?",answer:"1200",explain:"$5,000 − $3,800 = $1,200. El caso plantea un conteo físico o arqueo de caja y requiere revisar por qué el saldo registrado no coincide.",assert:["E","V"],extra:"Investigación adicional: ¿qué es un arqueo de caja y qué debería hacer el auditor?"},
+{title:"La cuenta escondida",emoji:"🟨",clue:"El auditor descubre un documento que demuestra que la empresa tiene otra cuenta bancaria con $15,000, pero esa cuenta no aparece en los registros.",question:"¿Qué problema existe?",options:["Hay dinero que no está registrado.","Hay demasiado dinero en la empresa.","No existe ningún problema."],correct:0,explain:"El material señala que existe dinero que no está registrado. La pregunta adicional pide explicar dónde debe quedar registrado en la contabilidad.",assert:["EX","E"],extra:"Explica: ¿dónde debería estar registrada esa cuenta para que la información contable sea completa?"},
+{title:"Los dólares",emoji:"🟥",clue:"La empresa tiene $1,000 dólares. El tipo de cambio es $18 pesos por dólar. El contador registró $10,000 pesos.",question:"¿Cuánto debería registrarse en pesos?",answer:"18000",explain:"$1,000 × $18 = $18,000 pesos. Por lo tanto, el registro de $10,000 no coincide con el importe calculado.",assert:["V"],extra:"¿El registro del contador es correcto? Sí / No. ¿Por qué?"},
+{title:"El dinero “disponible”",emoji:"🟪",clue:"La empresa tiene una inversión de $30,000, pero el contrato indica que el dinero no podrá retirarse durante 3 años. El contador dice: “Es dinero de la empresa, así que podemos ponerlo como dinero disponible.”",question:"¿Están de acuerdo?",options:["Sí","No"],correct:1,explain:"El caso invita a analizar la presentación del recurso: aunque pertenece a la empresa, el contrato indica que no podrá retirarse durante 3 años. Debe analizarse cómo corresponde presentarlo.",assert:["D","P"],extra:"Defiende tu respuesta usando la información del contrato como evidencia."}
+];
+
+const assertions={
+E:["👀","Existencia","¿El dinero realmente existe?"],
+EX:["🔍","Integridad / exhaustividad","¿Está registrado todo en contabilidad?"],
+D:["🏠","Derechos y obligaciones","¿El dinero es propiedad de la empresa?"],
+V:["🧮","Valuación / exactitud","¿Está registrado por la cantidad correcta?"],
+CO:["✂️","Corte","¿Está presentado en el periodo correcto?"],
+P:["📑","Presentación y revelación","¿Está presentado correctamente?"]
+};
+
+let idx=0,score=0,answered=false,selectedAssertions=[];
+function startGame(){
+  if(!currentUser){
+    alert("Primero inicia sesión con Google para comenzar la misión.");
+    document.getElementById("cuenta").scrollIntoView({behavior:"smooth"});
+    return;
+  }
+  document.getElementById("juego").scrollIntoView({behavior:"smooth"});
+  renderCase();
+}
+function renderCase(){
+ const c=cases[idx]; answered=false; selectedAssertions=[];
+ document.getElementById("caseLabel").textContent=`Pista ${idx+1} de ${cases.length}`;
+ document.getElementById("bar").style.width=((idx+1)/cases.length*100)+"%";
+ let html=`<div class="case-grid"><div class="case-card">
+ <div class="case-number">${c.emoji} PISTA ${idx+1}</div><h2>${c.title}</h2>
+ <div class="clue">${c.clue}</div><h3>${c.question}</h3>`;
+ if(c.answer){
+   html+=`<input id="answer" inputmode="numeric" placeholder="Escribe tu respuesta…">`;
+ }else{
+   html+=`<div class="options">${c.options.map((o,i)=>`<button class="option" onclick="choose(${i})">${String.fromCharCode(65+i)}) ${o}</button>`).join("")}</div>`;
+ }
+ html+=`<div class="explain" id="explain">${c.explain}<br><br><b>📚 ${c.extra}</b></div>
+ </div><div class="case-card"><h3>🃏 Aseveraciones</h3><p style="color:var(--muted)">Selecciona las tarjetas que consideres relacionadas con la pista. Después explica tu decisión en clase.</p>
+ <div class="assertions">${Object.entries(assertions).map(([key,v])=>`<button class="assertion" id="a-${key}" onclick="toggleA('${key}')"><b>${v[0]} ${key} · ${v[1]}</b><small>${v[2]}</small></button>`).join("")}</div>
+ <div class="actions"><button class="btn btn-ghost" onclick="resetCase()">↺ Reiniciar</button><button class="btn btn-primary" onclick="submitCase()">Comprobar 🔍</button></div>
+ </div></div>`;
+ document.getElementById("gameArea").innerHTML=html;
+}
+function choose(i){if(answered)return;document.querySelectorAll(".option").forEach(x=>x.classList.remove("selected"));document.querySelectorAll(".option")[i].classList.add("selected");document.querySelectorAll(".option")[i].dataset.choice=i;}
+function toggleA(key){if(answered)return;const el=document.getElementById("a-"+key);el.classList.toggle("selected");if(selectedAssertions.includes(key))selectedAssertions=selectedAssertions.filter(x=>x!==key);else selectedAssertions.push(key);}
+function normalize(s){return String(s).toLowerCase().replace(/[$,\s\.]/g,"");}
+function submitCase(){
+ if(answered)return;
+ const c=cases[idx]; let correct=false;
+ if(c.answer){const v=normalize(document.getElementById("answer").value);correct=(v==="1200"||v==="18000")&&(idx===1?true:idx===3?true:false);}
+ else {const selected=document.querySelector(".option.selected"); if(!selected){alert("Primero elige una respuesta.");return;} correct=Number(selected.dataset.choice)===c.correct;}
+ if(!c.answer && !document.querySelector(".option.selected"))return;
+ answered=true;
+ if(correct){score+=10;document.getElementById("score").textContent=score;}
+ const exp=document.getElementById("explain");exp.style.display="block";
+ if(!correct){exp.innerHTML="💡 <b>Revisa la pista:</b> la respuesta seleccionada no coincide con la respuesta planteada en el material.<br><br>"+c.explain+"<br><br><b>📚 "+c.extra+"</b>";}
+ document.querySelectorAll(".option").forEach((el,i)=>{if(i===c.correct)el.classList.add("correct");});
+ document.querySelectorAll(".assertion").forEach(el=>el.disabled=true);
+ const btn=document.querySelector(".actions .btn-primary");
+ btn.textContent=idx<cases.length-1?"Siguiente pista ➜":"Continuar al caso sorpresa 🎁";
+ btn.onclick=nextCase;
+}
+function nextCase(){if(idx<cases.length-1){idx++;renderCase();}else{renderSurprise();}}
+function resetCase(){renderCase();}
+function renderSurprise(){
+ document.getElementById("caseLabel").textContent="Caso sorpresa";
+ document.getElementById("bar").style.width="100%";
+ document.getElementById("gameArea").innerHTML=`<div class="case-card surprise" style="display:block"><div class="case-number">🎁 CASO SORPRESA</div><h2>El contador dice que todo está correcto.</h2><div class="clue">“El contador dice que todo está correcto porque él mismo revisó los registros.”</div>
+ <h3>¿Aceptarían esa explicación?</h3><div class="options"><button class="option" onclick="surpriseChoice(0)">Sí</button><button class="option" onclick="surpriseChoice(1)">No</button></div>
+ <div id="surpriseForm" style="display:none;margin-top:22px"><div class="field"><label>¿Qué evidencia pedirían?</label><textarea id="evidence" placeholder="Escribe tu propuesta…"></textarea></div><div class="field"><label>¿Por qué no sería suficiente confiar solamente en lo que dice el contador?</label><textarea id="why" placeholder="Explica tu razonamiento…"></textarea></div><button class="btn btn-primary" onclick="finishGame()">🏆 Terminar misión</button></div></div>`;
+}
+function surpriseChoice(i){document.querySelectorAll(".surprise .option").forEach(x=>x.classList.remove("selected"));document.querySelectorAll(".surprise .option")[i].classList.add("selected");document.getElementById("surpriseForm").style.display="block";}
+function finishGame(){
+ const ev=document.getElementById("evidence").value.trim(),why=document.getElementById("why").value.trim();
+ document.getElementById("gameArea").innerHTML=`<div class="final"><div class="trophy">🏆🕵️‍♂️</div><h2>Misión completada</h2><p>Tu equipo obtuvo</p><div class="score" style="font-size:52px">${score} / 50 puntos</div><p style="color:var(--muted);max-width:650px;margin:18px auto">Recuerda la idea central de la actividad: un auditor obtiene evidencia, compara documentos, cuenta dinero, confirma información y analiza registros antes de llegar a una conclusión.</p><button class="btn btn-primary" onclick="showReflection()">📝 Reflexión final</button></div>`;
+}
+window.startGame = startGame;
+window.choose = choose;
+window.toggleA = toggleA;
+window.submitCase = submitCase;
+window.nextCase = nextCase;
+window.resetCase = resetCase;
+window.surpriseChoice = surpriseChoice;
+window.finishGame = finishGame;
+window.showReflection = showReflection;
+
+function showReflection(){
+ document.getElementById("gameArea").innerHTML=`<div class="case-card"><div class="case-number">7 · LO QUE APRENDIMOS</div><h2>Tu reflexión de detective</h2>
+ <div class="field"><label>Antes pensaba que un auditor…</label><textarea></textarea></div>
+ <div class="field"><label>Ahora entiendo que un auditor…</label><textarea></textarea></div>
+ <div class="field"><label>La revisión que me pareció más importante fue…</label><textarea></textarea></div>
+ <div class="field"><label>Porque…</label><textarea></textarea></div>
+ <button class="btn btn-primary" onclick="alert('Reflexión guardada en esta sesión. En la siguiente versión podremos conectarla a una cuenta institucional o Gmail.')">💾 Guardar reflexión</button></div>`;
+}
+</script>
+</body>
+</html>
